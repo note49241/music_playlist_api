@@ -19,6 +19,10 @@ export class PlaylistsService {
     return this.playlistModel.find().populate("songs").exec();
   }
 
+  async findByPlaylist(playlistId: string): Promise<Playlist[]> {
+    return await this.playlistModel.findById(playlistId);
+  }
+
   async addSong(playlistId: string, addSongDto): Promise<Playlist> {
     const playlist = await this.playlistModel.findById(playlistId);
     if (!playlist) throw new NotFoundException("Playlist not found");
@@ -34,6 +38,11 @@ export class PlaylistsService {
     playlist.songs = playlist.songs.filter((song) => song.id !== body.songId);
 
     await playlist.save();
+    return playlist;
+  }
+
+  async removePlayList(id: string) {
+    const playlist = await this.playlistModel.deleteOne({ _id: id });
     return playlist;
   }
 }
